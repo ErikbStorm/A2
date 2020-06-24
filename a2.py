@@ -1,9 +1,10 @@
 import csv
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 
 def main():
     data = importData("dataset.csv")
-    analyzeLanguage(data)
+    analyseHappiness(data)
 
 
 def analyzeLanguage(data):
@@ -90,6 +91,28 @@ def analyzeTime(data):
 
     print(matrix)
 
+def analyseHappiness(data):
+    '''Average time of a game between interfaces.'''
+    matrix = {}
+    sid = SentimentIntensityAnalyzer()
+
+    for line in data:
+        if line['INTERFACEUSED'] in ['WYSIWYG', 'TBT']:
+
+            sentence = line['Text'].replace('((NEWLINE))', ' ')
+            ss = sid.polarity_scores(sentence)
+
+            try:
+                matrix[line['INTERFACEUSED']]['sum'] += ss['pos']
+                matrix[line['INTERFACEUSED']]['total'] += 1
+            except KeyError:
+                matrix[line['INTERFACEUSED']] = {}
+                matrix[line['INTERFACEUSED']]['sum'] = ss['pos']
+                matrix[line['INTERFACEUSED']]['total'] = 1
+
+    for type in matrix:
+        average = matrix[type]['sum'] / matrix[type]['total']
+        print(f'Average happiness for {type}: {average}')
 
 def importData(loc):
     f = open(loc, 'r', newline="")
