@@ -38,15 +38,15 @@ plot(data$gameid, data$game_length)
 wt <- data[data$experiment_type == 'TBTWYSIWYG' & data$game_length < 500000 & data$Interface_used == "WYSIWYG", ]
 head(wt)
 
-data <- data[data$game_length < 1000000, ]
+data <- data[data$game_length < 500000, ]
 
 nice <- aggregate(data$game_length, by=list(data$Interface_used, data$experiment_type), FUN=mean)
 nice
 
 nice2 <- aggregate(data$game_length, by=list(data$Interface_used), FUN=mean)
 nice2
-barplot(nice2$x, main="Average gametime per interface", names.arg = nice2$Group.1, ylab="Average time per game in milliseconds" ,col = c("lightblue", "darkblue"), ylim=c(0, 300000))
+barplot(nice2$x, main="Average gametime per interface", names.arg = nice2$Group.1, ylab="Average time per game in milliseconds" ,col = c("lightblue", "darkblue"), ylim=c(0, 250000))
 
-barplot(nice$x, main="Average gametimes", names.arg = nice$Group.1, ylab="Average time per game in milliseconds" ,col = c("lightblue", "lightblue", "darkblue", "darkblue"))
+barplot(nice$x, main="Average gametimes", names.arg = nice$Group.1, ylab="Average time per game in milliseconds" ,col = c("lightblue", "lightblue", "darkblue", "darkblue"), ylim=c(0, 250000))
 legend("topleft", inset = c(0.05, 0), c("TBTWYSIWYG", "WYSIWYGTBT"), fill=c("lightblue","darkblue"))
 
