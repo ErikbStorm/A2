@@ -4,11 +4,27 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def main():
     data = importData("dataset.csv")
+    # analyzeLanguage(data)
+    print(analyzeDataconsumption(data))
     analyseHappiness(data)
 
 
+def analyzeDataconsumption(data):
+    '''Analyze the difference in data usage between the two systems.'''
+    matrix = {'WYSIWYG': [], 'TBT': []}
+    for line in data:
+        length = len(line['Text'].replace('((NEWLINE))', ' '))
+        try:
+            matrix[line['INTERFACEUSED']].append(length)
+        except KeyError:
+            pass
+
+    matrix = {k: sum(v)/len(v) for k, v in matrix.items()}
+    return matrix
+
+
 def analyzeLanguage(data):
-    '''Overlap in words measured between systems.''' 
+    '''Overlap in words measured between systems.'''
     overlap = {'WYSIWYG': [], 'TBT': []}
     last_gameno = 0
     last_part = ''
@@ -24,7 +40,8 @@ def analyzeLanguage(data):
             if last_part == part:
                 pass
             else:
-                overlap[interface].append(getOverlapWordCounts(last_words, words))
+                overlap[interface].append(
+                    getOverlapWordCounts(last_words, words))
                 last_words = words
                 words = []
         else:
@@ -39,8 +56,6 @@ def analyzeLanguage(data):
 
 def getOverlapWordCounts(text1, text2):
     overlap_count = 0
-    longest_text = text1 if len(text1) > len(text2) else text2
-    if longest_text == text1: shortest_text = text2
     for word in text1:
         if word in text2:
             overlap_count += 1
@@ -56,7 +71,7 @@ def analyzeTurnTaking(data):
     count = 1
     last_gameno = 0
     for line in data:
-        #print(line)
+        # print(line)
         if last_interface == line['INTERFACEUSED']:
             if last_part == line['Sender']:
                 count += 1
@@ -68,11 +83,11 @@ def analyzeTurnTaking(data):
             avg_turns[line['INTERFACEUSED']].append(count)
             last_interface = line['INTERFACEUSED']
             count = 1
-        
 
     print(avg_turns)
     avg_turns = {k: sum(v)/len(v) for k, v in avg_turns.items()}
     print(avg_turns)
+
 
 def analyzeTime(data):
     '''Average time of a game between interfaces.'''
@@ -90,6 +105,7 @@ def analyzeTime(data):
     matrix = {k: sum(v)/len(v) for k, v in matrix.items()}
 
     print(matrix)
+
 
 def analyseHappiness(data):
     '''Average time of a game between interfaces.'''
@@ -114,11 +130,13 @@ def analyseHappiness(data):
         average = matrix[type]['sum'] / matrix[type]['total']
         print(f'Average happiness for {type}: {average}')
 
+
 def importData(loc):
-    f = open(loc, 'r', newline="")
-    reader = csv.DictReader(f, delimiter=";")
-    # f.close()
-    return reader
+    '''Reads a csv file and returns a list with lines.'''
+    with open(loc, 'r', newline="") as f:
+        reader = csv.DictReader(f, delimiter=";")
+        dicto = [line for line in reader]
+    return dicto
 
 
 if __name__ == '__main__':
