@@ -4,10 +4,12 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def main():
     data = importData("dataset.csv")
+    analyzeTime(data)
+    # analyzeTurnTaking(data)
     # analyzeLanguage(data)
-    analyzeDataconsumption(data)
-    analyseHappiness(data)
-    analyseEmotion(data)
+    # analyzeDataconsumption(data)
+    # analyseHappiness(data)
+    # analyseEmotion(data)
 
 
 def analyzeDataconsumption(data):
@@ -87,20 +89,55 @@ def analyzeTurnTaking(data):
 
 def analyzeTime(data):
     '''Average time of a game between interfaces.'''
-    matrix = {}
+    matrix = {"WYSIWYGTBT": {}, "TBTWYSIWYG": {}}
 
+    last_gameno = 0
+    time = 0
+    game_count = 1
     for line in data:
-        if line['Duration'] != '':
+        gameno = line['GameNo']
+        if line['INTERFACEUSED'] == "TBT":
+            interface = "WYSIWYG"
+        elif line['INTERFACEUSED'] == "WYSIWYG":
+            interface = "TBT"
+        if line['experimenttype'] == "WYSIWYGTBT":
+            ex_type = "TBTWYSIWYG"
+        elif line['experimenttype'] == "TBTWYSIWYG":
+            ex_type = "WYSIWYGTBT"
+        if gameno == last_gameno:
+            if line['Duration'] != '':
+                try:
+                    time += int(line['Duration'])
+                except:
+                    pass
+        else:
+            game_count += 1
             try:
-                matrix[line['INTERFACEUSED']] += [float(line['Duration'])]
+                matrix[ex_type][interface] += [time]
             except KeyError:
-                matrix[line['INTERFACEUSED']] = [float(line['Duration'])]
-            except ValueError:
-                pass
+                matrix[ex_type][interface] = [time]
+            time = 0
+            last_gameno = gameno
 
-    matrix = {k: sum(v)/len(v) for k, v in matrix.items()}
+    print(matrix)
 
-    print(f"Average time per game for each interface: {matrix}")
+    writeToCSV(matrix)
+
+    print(game_count)
+    print(f"Average time for a game for each interface: {matrix}")
+
+
+def writeToCSV(dicto):
+    with open("lengths.csv", "w+", newline='') as f:
+        writer = csv.writer(f, delimiter=';')
+        writer.writerow(
+            ["experiment_type", "Interface_used", "gameid", "game_length"])
+        i = 0
+        for k, v in dicto.items():
+            for kk, vv in v.items():
+                for num in vv:
+                    i += 1
+                    writer.writerow([k, kk, i, num])
 
 
 def analyseHappiness(data):
