@@ -4,12 +4,18 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def main():
     data = importData("dataset.csv")
+    print('Q1')
     analyzeTime(data)
-    # analyzeTurnTaking(data)
-    # analyzeLanguage(data)
-    # analyzeDataconsumption(data)
-    # analyseHappiness(data)
-    # analyseEmotion(data)
+    print('Q2')
+    analyzeTurnTaking(data)
+    print('Q3')
+    analyzeLanguage(data)
+    print('Q4')
+    analyseHappiness(data)
+    print('Q5')
+    analyseEmotion(data)
+    print('Q6')
+    analyzeDataconsumption(data)
 
 
 def analyzeDataconsumption(data):
@@ -23,7 +29,7 @@ def analyzeDataconsumption(data):
             pass
 
     matrix = {k: round(sum(v)/len(v), 2) for k, v in matrix.items()}
-    print(f"Average chars sent per line for each interface: {matrix}")
+    print(f"Average chars sent per line for each interface: {matrix}\n")
 
 
 def analyzeLanguage(data):
@@ -51,7 +57,7 @@ def analyzeLanguage(data):
             words = []
 
     overlap = {k: (sum(v)/len(v))*100.0 for k, v in overlap.items()}
-    print(f"% of overlap between per turn: {overlap}")
+    print(f"% of overlap between per turn: {overlap}\n")
 
 
 def getOverlapWordCounts(text1, text2):
@@ -84,7 +90,7 @@ def analyzeTurnTaking(data):
             count = 1
 
     avg_turns = {k: sum(v)/len(v) for k, v in avg_turns.items()}
-    print(f"Average messages per turn: {avg_turns}")
+    print(f"Average messages per turn: {avg_turns}\n")
 
 
 def analyzeTime(data):
@@ -127,6 +133,9 @@ def analyzeTime(data):
     print(f"Average time for a game for each interface: {matrix}")
 
 
+<< << << < HEAD
+
+
 def writeToCSV(dicto):
     with open("lengths.csv", "w+", newline='') as f:
         writer = csv.writer(f, delimiter=';')
@@ -140,17 +149,24 @@ def writeToCSV(dicto):
                     writer.writerow([k, kk, i, num])
 
 
+== == == =
+print(f"Average time per game for each interface: {matrix}\n")
+>>>>>> > c6ae8a3983163327dbdbbe2232be6fe55d8536a6
+
+
 def analyseHappiness(data):
-    '''Average positive sentiment per line per interface type'''
+    '''Average positive sentiment per line per interface type.'''
     matrix = {}
     sid = SentimentIntensityAnalyzer()
 
     for line in data:
         if line['INTERFACEUSED'] in ['WYSIWYG', 'TBT']:
 
+            # Sentence cleanup and sentiment analysis
             sentence = line['Text'].replace('((NEWLINE))', ' ')
             ss = sid.polarity_scores(sentence)
 
+            # Add positive sentiment to sum and one to total
             try:
                 matrix[line['INTERFACEUSED']]['sum'] += ss['pos']
                 matrix[line['INTERFACEUSED']]['total'] += 1
@@ -159,13 +175,15 @@ def analyseHappiness(data):
                 matrix[line['INTERFACEUSED']]['sum'] = ss['pos']
                 matrix[line['INTERFACEUSED']]['total'] = 1
 
+    # Print results
     for type in matrix:
         average = matrix[type]['sum'] / matrix[type]['total']
-        print(f'Average happiness per line for {type}: {average}')
+        print(
+            f'Total amount of positive sentiment for {type}: {matrix[type]["sum"]}\nTotal amount of lines for {type}: {matrix[type]["total"]}\nAverage happiness per line for {type}: {average}\n')
 
 
 def analyseEmotion(data):
-    '''Average time of a game between interfaces.'''
+    '''Average change of emotion per line per interface type'''
     matrix = {}
     sid = SentimentIntensityAnalyzer()
     previous_emotion = ''
@@ -174,27 +192,32 @@ def analyseEmotion(data):
     for line in data:
         if line['INTERFACEUSED'] in ['WYSIWYG', 'TBT']:
 
+            # Sentiment analysis
             sentence = line['Text'].replace('((NEWLINE))', ' ')
             ss = sid.polarity_scores(sentence)
 
+            # Check primary emotion
             if ss['neg'] < ss['pos']:
                 current_emotion = 'pos'
             else:
                 current_emotion = 'neg'
 
+            # Add to total
             try:
                 matrix[line['INTERFACEUSED']]['total'] += 1
             except KeyError:
                 matrix[line['INTERFACEUSED']] = {}
                 matrix[line['INTERFACEUSED']]['total'] = 1
 
+            # Add one change when the primary emotion
             if current_emotion != previous_emotion:
                 try:
                     matrix[line['INTERFACEUSED']]['sum'] += 1
                 except KeyError:
                     matrix[line['INTERFACEUSED']]['sum'] = 1
 
-            if previous_type != line['INTERFACEUSED']:
+            # Remove one when there is a change in both the interface type and emotion
+            if previous_type != line['INTERFACEUSED'] and current_emotion != previous_emotion:
                 try:
                     matrix[line['INTERFACEUSED']]['sum'] -= 1
                 except:
@@ -203,9 +226,11 @@ def analyseEmotion(data):
             previous_emotion = current_emotion
             previous_type = line['INTERFACEUSED']
 
+    # Print results
     for type in matrix:
         average = matrix[type]['sum'] / matrix[type]['total']
-        print(f'Average emotional change per line for {type}: {average}')
+        print(
+            f'Total amount of emotional changes for {type}: {matrix[type]["sum"]}\nTotal amount of lines for {type}: {matrix[type]["total"]}\nAverage emotional change per line for {type}: {average}\n')
 
 
 def importData(loc):
