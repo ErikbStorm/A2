@@ -19,9 +19,9 @@ barplot(c(1.02, 1.232), main="Average m/t per interface", ylab='Average messages
 
 #overlap
 barplot(c(8.68, 19.86), main="Overlap of words per interface", ylab='Percentage of Word overlap between turns.', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,20))
+barplot(c(0.0868, 0.1986), main="Overlap of words per interface", ylab='Percentage of Word overlap between turns.', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,0.2))
 
 #Data usage
-barplot(c(6.9, 7.3), main="Dmata Usage of Interfaces", ylab='average chars per line', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,10))
 
 #Happiness
 barplot(c(0.016, 0.032), main="Happiness per Interface", ylab='Happiness per line?', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,0.04))
