@@ -133,10 +133,6 @@ def analyzeTime(data):
     print(game_count)
     print(f"Average time for a game for each interface: {matrix}")
 
-
-<< << << < HEAD
-
-
 def writeToCSV(dicto):
     with open("lengths.csv", "w+", newline='') as f:
         writer = csv.writer(f, delimiter=';')
@@ -148,12 +144,6 @@ def writeToCSV(dicto):
                 for num in vv:
                     i += 1
                     writer.writerow([k, kk, i, num])
-
-
-== == == =
-print(f"Average time per game for each interface: {matrix}\n")
->>>>>> > c6ae8a3983163327dbdbbe2232be6fe55d8536a6
-
 
 def analyseHappiness(data):
     '''Average positive sentiment per line per interface type.'''
