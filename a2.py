@@ -7,6 +7,7 @@ def main():
     # analyzeLanguage(data)
     print(analyzeDataconsumption(data))
     analyseHappiness(data)
+    analyseEmotion(data)
 
 
 def analyzeDataconsumption(data):
@@ -108,7 +109,7 @@ def analyzeTime(data):
 
 
 def analyseHappiness(data):
-    '''Average time of a game between interfaces.'''
+    '''Average positive sentiment per line per interface type'''
     matrix = {}
     sid = SentimentIntensityAnalyzer()
 
@@ -128,7 +129,51 @@ def analyseHappiness(data):
 
     for type in matrix:
         average = matrix[type]['sum'] / matrix[type]['total']
-        print(f'Average happiness for {type}: {average}')
+        print(f'Average happiness per line for {type}: {average}')
+
+
+def analyseEmotion(data):
+    '''Average time of a game between interfaces.'''
+    matrix = {}
+    sid = SentimentIntensityAnalyzer()
+    previous_emotion = ''
+    previous_type = ''
+
+    for line in data:
+        if line['INTERFACEUSED'] in ['WYSIWYG', 'TBT']:
+
+            sentence = line['Text'].replace('((NEWLINE))', ' ')
+            ss = sid.polarity_scores(sentence)
+
+            if ss['neg'] < ss['pos']:
+                current_emotion = 'pos'
+            else:
+                current_emotion = 'neg'
+
+            try:
+                matrix[line['INTERFACEUSED']]['total'] += 1
+            except KeyError:
+                matrix[line['INTERFACEUSED']] = {}
+                matrix[line['INTERFACEUSED']]['total'] = 1
+
+            if current_emotion != previous_emotion:
+                try:
+                    matrix[line['INTERFACEUSED']]['sum'] += 1
+                except KeyError:
+                    matrix[line['INTERFACEUSED']]['sum'] = 1
+
+            if previous_type != line['INTERFACEUSED']:
+                try:
+                    matrix[line['INTERFACEUSED']]['sum'] -= 1
+                except:
+                    pass
+
+            previous_emotion = current_emotion
+            previous_type = line['INTERFACEUSED']
+
+    for type in matrix:
+        average = matrix[type]['sum'] / matrix[type]['total']
+        print(f'Average emotional change per line for {type}: {average}')
 
 
 def importData(loc):
