@@ -96,20 +96,63 @@ def analyzeTurnTaking(data):
 
 def analyzeTime(data):
     '''Average time of a game between interfaces.'''
-    matrix = {}
+    matrix = {"WYSIWYGTBT": {}, "TBTWYSIWYG": {}}
 
+    last_gameno = 0
+    time = 0
+    game_count = 1
     for line in data:
-        if line['Duration'] != '':
+        gameno = line['GameNo']
+        if line['INTERFACEUSED'] == "TBT":
+            interface = "WYSIWYG"
+        elif line['INTERFACEUSED'] == "WYSIWYG":
+            interface = "TBT"
+        if line['experimenttype'] == "WYSIWYGTBT":
+            ex_type = "TBTWYSIWYG"
+        elif line['experimenttype'] == "TBTWYSIWYG":
+            ex_type = "WYSIWYGTBT"
+        if gameno == last_gameno:
+            if line['Duration'] != '':
+                try:
+                    time += int(line['Duration'])
+                except:
+                    pass
+        else:
+            game_count += 1
             try:
-                matrix[line['INTERFACEUSED']] += [float(line['Duration'])]
+                matrix[ex_type][interface] += [time]
             except KeyError:
-                matrix[line['INTERFACEUSED']] = [float(line['Duration'])]
-            except ValueError:
-                pass
+                matrix[ex_type][interface] = [time]
+            time = 0
+            last_gameno = gameno
 
-    matrix = {k: sum(v)/len(v) for k, v in matrix.items()}
+    print(matrix)
 
-    print(f"Average time per game for each interface: {matrix}\n")
+    writeToCSV(matrix)
+
+    print(game_count)
+    print(f"Average time for a game for each interface: {matrix}")
+
+
+<< << << < HEAD
+
+
+def writeToCSV(dicto):
+    with open("lengths.csv", "w+", newline='') as f:
+        writer = csv.writer(f, delimiter=';')
+        writer.writerow(
+            ["experiment_type", "Interface_used", "gameid", "game_length"])
+        i = 0
+        for k, v in dicto.items():
+            for kk, vv in v.items():
+                for num in vv:
+                    i += 1
+                    writer.writerow([k, kk, i, num])
+
+
+== == == =
+print(f"Average time per game for each interface: {matrix}\n")
+>>>>>> > c6ae8a3983163327dbdbbe2232be6fe55d8536a6
 
 
 def analyseHappiness(data):
@@ -136,7 +179,8 @@ def analyseHappiness(data):
     # Print results
     for type in matrix:
         average = matrix[type]['sum'] / matrix[type]['total']
-        print(f'Total amount of positive sentiment for {type}: {matrix[type]["sum"]}\nTotal amount of lines for {type}: {matrix[type]["total"]}\nAverage happiness per line for {type}: {average}\n')
+        print(
+            f'Total amount of positive sentiment for {type}: {matrix[type]["sum"]}\nTotal amount of lines for {type}: {matrix[type]["total"]}\nAverage happiness per line for {type}: {average}\n')
 
 
 def analyseEmotion(data):
@@ -186,7 +230,8 @@ def analyseEmotion(data):
     # Print results
     for type in matrix:
         average = matrix[type]['sum'] / matrix[type]['total']
-        print(f'Total amount of emotional changes for {type}: {matrix[type]["sum"]}\nTotal amount of lines for {type}: {matrix[type]["total"]}\nAverage emotional change per line for {type}: {average}\n')
+        print(
+            f'Total amount of emotional changes for {type}: {matrix[type]["sum"]}\nTotal amount of lines for {type}: {matrix[type]["total"]}\nAverage emotional change per line for {type}: {average}\n')
 
 
 def importData(loc):
