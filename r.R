@@ -24,10 +24,10 @@ barplot(c(8.68, 19.86), main="Overlap of words per interface", ylab='Percentage 
 barplot(c(6.9, 7.3), main="Dmata Usage of Interfaces", ylab='average chars per line', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,10))
 
 #Happiness
-barplot(c(0.016, 0.032), main="Happiness per Interface", ylab='Happiness per line?', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,0.04))
+barplot(c(0.036, 0.044), main="Happiness per Interface", ylab='Average happiness per turn', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,0.05))
 
 #Emotional change per line
-barplot(c(0.04, 0.0765), main="Emotional Change per Interface", ylab='Emotional change per line', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,0.1))
+barplot(c(0.087, 0.103), main="Emotional Change per Interface", ylab='Average emotional change per turn', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,0.11))
 
 
 data <- read.csv("lengths.csv", sep=";")
