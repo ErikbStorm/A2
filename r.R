@@ -18,7 +18,6 @@ barplot(c(130, 527), main="Average gametime per interface", ylab='Average time o
 barplot(c(1.02, 1.232), main="Average m/t per interface", ylab='Average messages per turn', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,1.5))
 
 #overlap
-barplot(c(8.68, 19.86), main="Overlap of words per interface", ylab='Percentage of Word overlap between turns.', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,20))
 barplot(c(0.0868, 0.1986), main="Overlap of words per interface", ylab='Percentage of Word overlap between turns.', names.arg = c("WYSIWYG", "TBT"), col = c("darkblue", "lightblue"), ylim = c(0,0.2))
 
 #Data usage
