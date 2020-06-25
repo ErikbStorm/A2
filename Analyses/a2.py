@@ -1,10 +1,9 @@
 import csv
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from googletrans import Translator
 
 
 def main():
-    data = importData("dataset_trans.csv")
+    data = importData("../data/dataset_trans.csv")
     print('Q1')
     analyzeTime(data)
     print('Q2')
@@ -128,9 +127,7 @@ def analyzeTime(data):
 
     print(matrix)
 
-    writeToCSV(matrix)
-
-    print(game_count)
+    # writeToCSV(matrix) #Only enable if willing to create csv file
     print(f"Average time for a game for each interface: {matrix}")
 
 
