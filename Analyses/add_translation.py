@@ -8,7 +8,7 @@ def addTranslation():
     '''Reads a csv file and returns a list with lines.'''
     translator = Translator()
 
-    with open('dataset.csv', 'r', newline="") as inf, open('dataset_trans.csv', 'w', newline="") as outf:
+    with open('../data/dataset.csv', 'r', newline="") as inf, open('../data/dataset_trans2.csv', 'w', newline="") as outf:
         csvreader = csv.DictReader(inf, delimiter=";")
         fieldnames = csvreader.fieldnames
         fieldnames[13]  = 'Translation'
