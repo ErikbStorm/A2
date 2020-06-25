@@ -57,8 +57,8 @@ def analyzeLanguage(data):
             last_words = words
             words = []
 
-    overlap = {k: (sum(v)/len(v))*100.0 for k, v in overlap.items()}
-    print(f"% of overlap between per turn: {overlap}\n")
+    overlap = {k: (sum(v)/len(v)) for k, v in overlap.items()}
+    print(f"Average count of overlapping words per turn: {overlap}\n")
 
 
 def getOverlapWordCounts(text1, text2):
@@ -133,6 +133,7 @@ def analyzeTime(data):
     print(game_count)
     print(f"Average time for a game for each interface: {matrix}")
 
+
 def writeToCSV(dicto):
     with open("lengths.csv", "w+", newline='') as f:
         writer = csv.writer(f, delimiter=';')
@@ -144,6 +145,7 @@ def writeToCSV(dicto):
                 for num in vv:
                     i += 1
                     writer.writerow([k, kk, i, num])
+
 
 def analyseHappiness(data):
     '''Average positive sentiment per line per interface type.'''
