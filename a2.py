@@ -4,10 +4,18 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def main():
     data = importData("dataset.csv")
-    # analyzeLanguage(data)
-    analyzeDataconsumption(data)
+    print('Q1')
+    analyzeTime(data)
+    print('Q2')
+    analyzeTurnTaking(data)
+    print('Q3')
+    analyzeLanguage(data)
+    print('Q4')
     analyseHappiness(data)
+    print('Q5')
     analyseEmotion(data)
+    print('Q6')
+    analyzeDataconsumption(data)
 
 
 def analyzeDataconsumption(data):
@@ -21,7 +29,7 @@ def analyzeDataconsumption(data):
             pass
 
     matrix = {k: round(sum(v)/len(v), 2) for k, v in matrix.items()}
-    print(f"Average chars sent per line for each interface: {matrix}")
+    print(f"Average chars sent per line for each interface: {matrix}\n")
 
 
 def analyzeLanguage(data):
@@ -49,7 +57,7 @@ def analyzeLanguage(data):
             words = []
 
     overlap = {k: (sum(v)/len(v))*100.0 for k, v in overlap.items()}
-    print(f"% of overlap between per turn: {overlap}")
+    print(f"% of overlap between per turn: {overlap}\n")
 
 
 def getOverlapWordCounts(text1, text2):
@@ -82,7 +90,7 @@ def analyzeTurnTaking(data):
             count = 1
 
     avg_turns = {k: sum(v)/len(v) for k, v in avg_turns.items()}
-    print(f"Average messages per turn: {avg_turns}")
+    print(f"Average messages per turn: {avg_turns}\n")
 
 
 def analyzeTime(data):
@@ -100,7 +108,7 @@ def analyzeTime(data):
 
     matrix = {k: sum(v)/len(v) for k, v in matrix.items()}
 
-    print(f"Average time per game for each interface: {matrix}")
+    print(f"Average time per game for each interface: {matrix}\n")
 
 
 def analyseHappiness(data):
