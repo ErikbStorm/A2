@@ -5,7 +5,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 def main():
     data = importData("dataset.csv")
     # analyzeLanguage(data)
-    print(analyzeDataconsumption(data))
+    analyzeDataconsumption(data)
     analyseHappiness(data)
     analyseEmotion(data)
 
@@ -20,20 +20,18 @@ def analyzeDataconsumption(data):
         except KeyError:
             pass
 
-    matrix = {k: sum(v)/len(v) for k, v in matrix.items()}
-    return matrix
+    matrix = {k: round(sum(v)/len(v), 2) for k, v in matrix.items()}
+    print(f"Average chars sent per line for each interface: {matrix}")
 
 
 def analyzeLanguage(data):
     '''Overlap in words measured between systems.'''
     overlap = {'WYSIWYG': [], 'TBT': []}
-    last_gameno = 0
     last_part = ''
     last_interface = ''
     last_words = []
     words = []
     for line in data:
-        game_no = line['GameNo']
         part = line['Sender']
         interface = line['INTERFACEUSED']
         words += line['Text'].split()
@@ -50,12 +48,12 @@ def analyzeLanguage(data):
             last_words = words
             words = []
 
-    print(overlap)
-    overlap = {k: sum(v)/len(v) for k, v in overlap.items()}
-    print(overlap)
+    overlap = {k: (sum(v)/len(v))*100.0 for k, v in overlap.items()}
+    print(f"% of overlap between per turn: {overlap}")
 
 
 def getOverlapWordCounts(text1, text2):
+    '''Counts the overlapping words between interfaces.'''
     overlap_count = 0
     for word in text1:
         if word in text2:
@@ -70,9 +68,7 @@ def analyzeTurnTaking(data):
     last_interface = ''
     last_part = ''
     count = 1
-    last_gameno = 0
     for line in data:
-        # print(line)
         if last_interface == line['INTERFACEUSED']:
             if last_part == line['Sender']:
                 count += 1
@@ -85,9 +81,8 @@ def analyzeTurnTaking(data):
             last_interface = line['INTERFACEUSED']
             count = 1
 
-    print(avg_turns)
     avg_turns = {k: sum(v)/len(v) for k, v in avg_turns.items()}
-    print(avg_turns)
+    print(f"Average messages per turn: {avg_turns}")
 
 
 def analyzeTime(data):
@@ -105,7 +100,7 @@ def analyzeTime(data):
 
     matrix = {k: sum(v)/len(v) for k, v in matrix.items()}
 
-    print(matrix)
+    print(f"Average time per game for each interface: {matrix}")
 
 
 def analyseHappiness(data):
