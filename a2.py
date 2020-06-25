@@ -1,9 +1,10 @@
 import csv
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from googletrans import Translator
 
 
 def main():
-    data = importData("dataset.csv")
+    data = importData("dataset_trans.csv")
     print('Q1')
     analyzeTime(data)
     print('Q2')
@@ -117,10 +118,10 @@ def analyseHappiness(data):
     sid = SentimentIntensityAnalyzer()
 
     for line in data:
-        if line['INTERFACEUSED'] in ['WYSIWYG', 'TBT']:
+        if line['TURNTYPE'] in ['WYSIWYG', 'TBT']:
 
             # Sentence cleanup and sentiment analysis
-            sentence = line['Text'].replace('((NEWLINE))', ' ')
+            sentence = line['Translation']
             ss = sid.polarity_scores(sentence)
 
             # Add positive sentiment to sum and one to total
@@ -146,10 +147,10 @@ def analyseEmotion(data):
     previous_type = ''
 
     for line in data:
-        if line['INTERFACEUSED'] in ['WYSIWYG', 'TBT']:
+        if line['TURNTYPE'] in ['WYSIWYG', 'TBT']:
 
             # Sentiment analysis
-            sentence = line['Text'].replace('((NEWLINE))', ' ')
+            sentence = line['Translation']
             ss = sid.polarity_scores(sentence)
 
             # Check primary emotion
